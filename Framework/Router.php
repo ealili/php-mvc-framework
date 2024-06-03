@@ -3,25 +3,22 @@
 namespace Framework;
 
 use App\Controllers\ErrorController;
-use Exception;
 use Framework\Middlewares\Authorize;
 
 class Router
 {
-    // Declare static property with correct syntax and visibility
     protected static $routes = [];
 
     /**
      * @param string $method
      * @param string $uri
-     * @param string $action
+     * @param string $controller
+     * @param $controllerMethod
      * @param array $middleware
      * @return void
      */
-    public static function registerRoute(string $method, string $uri, string $action, array $middleware = [])
+    public static function registerRoute(string $method, string $uri, string $controller, $controllerMethod, array $middleware = [])
     {
-        list($controller, $controllerMethod) = explode('@', $action);
-
         self::$routes[] = [
             'method' => $method,
             'uri' => $uri,
@@ -36,12 +33,13 @@ class Router
      *
      * @param string $uri
      * @param string $controller
+     * @param string $method
      * @param array $middleware
      * @return void
      */
-    public static function get($uri, $controller, $middleware = [])
+    public static function get(string $uri, string $controller, string $method, array $middleware = [])
     {
-        self::registerRoute('GET', $uri, $controller, $middleware);
+        self::registerRoute('GET', $uri, $controller, $method, $middleware);
     }
 
     /**
@@ -49,12 +47,13 @@ class Router
      *
      * @param string $uri
      * @param string $controller
+     * @param string $method
      * @param array $middleware
      * @return void
      */
-    public static function post($uri, $controller, $middleware = [])
+    public static function post(string $uri, string $controller, string $method, array $middleware = [])
     {
-        self::registerRoute('POST', $uri, $controller, $middleware);
+        self::registerRoute('POST', $uri, $controller, $method, $middleware);
     }
 
     /**
@@ -62,12 +61,13 @@ class Router
      *
      * @param string $uri
      * @param string $controller
+     * @param string $method
      * @param array $middleware
      * @return void
      */
-    public static function put($uri, $controller, $middleware = [])
+    public static function put(string $uri, string $controller, string $method, array $middleware = [])
     {
-        self::registerRoute('PUT', $uri, $controller, $middleware);
+        self::registerRoute('PUT', $uri, $controller, $method, $middleware);
     }
 
     /**
@@ -75,12 +75,13 @@ class Router
      *
      * @param string $uri
      * @param string $controller
+     * @param string $method
      * @param array $middleware
      * @return void
      */
-    public static function delete($uri, $controller, $middleware = [])
+    public static function delete(string $uri, string $controller, string $method, array $middleware = [])
     {
-        self::registerRoute('DELETE', $uri, $controller, $middleware);
+        self::registerRoute('DELETE', $uri, $controller, $method, $middleware);
     }
 
     /**
@@ -88,7 +89,7 @@ class Router
      *
      * @param string $uri
      */
-    public static function route($uri)
+    public static function route(string $uri)
     {
         $requestMethod = $_SERVER['REQUEST_METHOD'];
 
@@ -130,7 +131,7 @@ class Router
                         (new Authorize())->handle($middleware);
                     }
 
-                    $controller = 'App\\Controllers\\' . $route['controller'];
+                    $controller = $route['controller'];
                     $controllerMethod = $route['controllerMethod'];
 
                     // Instantiate the controller
