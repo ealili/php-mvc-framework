@@ -1,0 +1,19 @@
+{
+    "name": "ealili/php-mvc-framework",
+    "description": "PHP MVC starter",
+    "authors": [
+        {
+            "name": "Enes Alili",
+            "email": "enes@ealili.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Framework\\": "Framework/",
+            "App\\": "App/"
+        }
+    },
+    "require": {
+        "ext-pdo": "*"
+    }
+}
